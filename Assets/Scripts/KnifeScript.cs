@@ -17,6 +17,8 @@ public class KnifeScript : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         knifeCollider = GetComponent<BoxCollider2D>();
+
+
     }
 
     private void Update()
@@ -25,7 +27,7 @@ public class KnifeScript : MonoBehaviour
         {
             rb.AddForce(throwForce, ForceMode2D.Impulse);
             rb.gravityScale = 1;
-            //todo
+            GameController.Instance.GameUI.DecrementDisplatedKnifes();
         }
         
     }
@@ -38,6 +40,7 @@ public class KnifeScript : MonoBehaviour
 
         if(collision.collider.tag == "Log")
         {
+            GetComponent<ParticleSystem>().Play();
             rb.velocity = new Vector2(0, 0);
             rb.bodyType = RigidbodyType2D.Kinematic;
             this.transform.SetParent(collision.collider.transform);
@@ -45,11 +48,12 @@ public class KnifeScript : MonoBehaviour
             knifeCollider.offset = new Vector2(knifeCollider.offset.x, -0.4f);
             knifeCollider.size = new Vector2(knifeCollider.size.x, 1.2f);
 
-
+            GameController.Instance.OnKnifeHit();
         }
         else if (collision.collider.tag == "Knife")
         {
             rb.velocity = new Vector2(rb.velocity.x, -2);
+            GameController.Instance.startGameOwerSequence(false);
         }
     }
 
